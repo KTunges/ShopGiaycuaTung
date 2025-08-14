@@ -764,3 +764,4 @@ C:/Users/Admin/Downloads/MVC-WebBanHang/MVC-WebBanHang/obj/Debug/net6.0/ref/MVC_
 /Users/nguyenkimtung/Downloads/MVC-WebBanHang/obj/Debug/net6.0/MVC_coreweb.pdb
 /Users/nguyenkimtung/Downloads/MVC-WebBanHang/obj/Debug/net6.0/MVC_coreweb.genruntimeconfig.cache
 /Users/nguyenkimtung/Downloads/MVC-WebBanHang/obj/Debug/net6.0/ref/MVC_coreweb.dll
+/Users/nguyenkimtung/Downloads/MVC-WebBanHang/obj/Debug/net6.0/MVC_coreweb.sourcelink.json
