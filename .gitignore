@@ -1,4 +1,11 @@
+# Bỏ qua thư mục và file của Visual Studio
+.vs/
 bin/
 obj/
-bin/
-obj/
+
+# Bỏ qua file build tạm
+*.user
+*.suo
+*.cache
+*.log
+*.vsidx

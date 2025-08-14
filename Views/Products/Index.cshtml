@@ -7,9 +7,13 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Create New
+    </a>
+</div>
+
+
 <table class="table">
     <thead>
         <tr>
@@ -55,23 +59,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductId">Chỉnh sửa</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductId">Chi tiết</a> |
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-primary">Chỉnh sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-info text-white">Chi tiết</a>
                     @{
-                        if (item.IsHide == "false     ")
+                        @if (!string.IsNullOrEmpty(item.IsHide) && item.IsHide.Trim() == "false")
                         {
-                            <a asp-action="Delete" asp-route-id="@item.ProductId">
-                                Ẩn</a>
+                            <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-warning text-white">Ẩn</a>
                         }
                         else
                         {
-                            <a asp-action="Delete" asp-route-id="@item.ProductId">
-                                Hiện</a>
+                            <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-success">Hiện</a>
                         }
+
                     }
-                    
-            </td>
+                </td>
+
         </tr>
 }
     </tbody>
