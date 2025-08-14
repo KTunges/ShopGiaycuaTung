@@ -1,0 +1,37 @@
+﻿@model MVC_template.Models.HomeProduct
+@{
+    ViewData["Title"] = "Show";
+    Layout = "~/Views/Shared/_LayoutTemplate.cshtml";
+}
+
+
+<section class="service_section layout_padding ">
+    <div class="container">
+        <br />
+        <!--New product-->
+        <h2 class="custom_heading">Các mẫu giày mới của trang web.</h2>
+        <p class="custom_heading-text">
+            Các sản phẩm mới vừa được nhập về cửa hàng của shop
+        </p>
+        @await Html.PartialAsync("PartialViewProduct",Model.newProducts)
+        <!--End new product-->
+
+        <br />
+        <!--Top sale-->
+        <h2 class="custom_heading">Các loại Giày bán chạy</h2>
+        <p class="custom_heading-text">
+            Các sản phẩm Giày mới, bán chạy nhất của shop
+        </p>
+        @await Html.PartialAsync("PartialViewProduct",Model.topSaleProducts)
+        <!--End top sale-->
+
+        <br />
+        
+        
+
+    </div>
+</section>
+<!-- tasty section -->
+
+<!-- end tasty section -->
+

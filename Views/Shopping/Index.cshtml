@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MVC_template.Data.Product>
+
+@{
+    Layout = "~/Views/Shared/_LayoutTemplateSubpage.cshtml";
+}
+
+@{
+    var Supplier = (List<MVC_template.Data.Supplier>)ViewBag.Supplier;
+}
+
+@if (TempData["alert"] != null)
+{
+    <div class="alert alert-success">
+        <strong>Success</strong> @TempData["alert"]
+    </div>
+}
+<div style="text-align:center"><h2>Các sản phẩm chính</h2>
+<p>Đa dạng chủng loại trái cây nhiệt đới</p>
+</div>
+
+<div class="d-flex justify-content-between">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Nhà phân phối
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" href="/Shopping/Index">Tất cả</a></li>
+            @foreach (var item in Supplier)
+            {
+                <li><a class="dropdown-item" href="/Shopping/Index/NhaPhanPhoi/@item.SupplierId">@item.SupplierName</a></li>
+            }
+            
+        </ul>
+    </div>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Giá
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            @{
+                if (ViewBag.SupplierId  != null)
+                {
+                    var supplierId = ViewBag.SupplierId;
+                    <li><a class="dropdown-item" href="/Shopping/Index/NhaPhanPhoi/@supplierId">Tất cả</a></li>
+                    <li><a class="dropdown-item" href="/Shopping/Index/NhaPhanPhoi/@supplierId/tang">Tăng dần</a></li>
+                    <li><a class="dropdown-item" href="/Shopping/Index/NhaPhanPhoi/@supplierId/giam">Giảm dần</a></li>
+                }
+                else
+                {
+                    <li><a class="dropdown-item" href="/Shopping/Index">Tất cả</a></li>
+                    <li><a class="dropdown-item" href="/Shopping/Index/tang">Tăng dần</a></li>
+                    <li><a class="dropdown-item" href="/Shopping/Index/giam">Giảm dần</a></li>
+                }
+            }
+           
+        </ul>
+    </div>
+
+
+</div>
+
+@*<section id="product" >
+    <h2>Các sản phẩm chính</h2>
+    <p>Đa dạng chủng loại trái cây nhiệt đới</p>
+    <div class="pro-container">
+    @foreach (var item in Model)
+    {
+            <div class="pro">
+            <a href="Product/@item.ProductId" class="div-click">
+            <img src="~/Images/Products/@item.Image" alt="@item.ProductName" />
+            <div class="des">
+                <span>@item.Supplier.SupplierName</span>
+                <h5>@item.ProductName</h5>
+                <h4>@item.Prices VNĐ</h4>
+            </div>
+            </a>
+            <a asp-action="AddToCart" asp-route-id="@item.ProductId" asp-route-price="@item.Prices">Thêm vào giỏ hàng</a>
+        </div>
+        
+        
+    }
+    </div>
+
+</section>*@
+@await Html.PartialAsync("PartialViewProduct", Model)
+
+
+
