@@ -339,7 +339,7 @@ namespace MVC_template.Controllers
         // Trả về [{ type:"product"/"supplier", text:"...", supplierId:"..." }]
         // =======================
         // Đảm bảo có using:
-// using Microsoft.EntityFrameworkCore;
+        // using Microsoft.EntityFrameworkCore;
 
         [HttpGet("Shopping/SearchSuggest")]
         [Produces("application/json")]
