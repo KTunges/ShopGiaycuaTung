@@ -1,58 +1,232 @@
-﻿
+﻿@model IEnumerable<MVC_template.Data.Product>
+@using System.Linq
+@using MVC_template.Data
+
 @{
-    ViewData["Title"] = "Search";
-    Layout = "~/Views/Shared/_LayoutTemplateSubpage.cshtml";
-}
-<br />
-<div class="form-outline mb-4">
-  <input type="search" class="form-control" id="datatable-search-input">
-  <label class="form-label" for="datatable-search-input">Search</label><br />
-    <div class="d-flex justify-content-around">
-        <div>
-            <lable for="from">Giá từ:</lable>
-            <input id="from" type="number" min="0" />
-        </div>
-        <div>
-            <lable for="to">Đến:</lable>
-            <input id="to" type="number" min="0" />
-        </div>
-        <button id="btnFind" type="button" class="btn btn-info">Tìm</button>
+    ViewData["Title"] = "Tìm kiếm sản phẩm";
 
+    var q         = Context.Request.Query["keyword"].ToString();
+    var supplierId= Context.Request.Query["supplierId"].ToString();
+    var minPrice  = Context.Request.Query["minPrice"].ToString();
+    var maxPrice  = Context.Request.Query["maxPrice"].ToString();
+    var sort      = Context.Request.Query["sort"].ToString();
+
+    bool inStock = true;
+    var inStockStr = Context.Request.Query["inStockOnly"].ToString();
+    if (!string.IsNullOrEmpty(inStockStr))
+    {
+        inStock = inStockStr == "true" || inStockStr == "on" || inStockStr == "1";
+    }
+
+    var suppliers = ViewBag.Supplier as IEnumerable<Supplier>;
+}
+
+<div class="container py-3">
+    <h2 class="mb-3">Tìm kiếm sản phẩm</h2>
+
+    <form method="get" asp-controller="Shopping" asp-action="Search" class="row g-3 align-items-end" id="searchForm">
+        <!-- Từ khóa + gợi ý dropdown -->
+        <div class="col-md-5 position-relative">
+            <label class="form-label">Từ khóa (Tên sản phẩm hoặc nhà cung cấp)</label>
+            <input type="text"
+                   class="form-control"
+                   name="keyword"
+                   id="q"
+                   value="@q"
+                   autocomplete="off"
+                   placeholder="Nhập tên sản phẩm hoặc nhà cung cấp..." />
+            <div id="suggestDropdown"
+                 class="dropdown-menu show"
+                 style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:260px; overflow:auto;">
+            </div>
+        </div>
+
+        <!-- Nhà cung cấp -->
+        <div class="col-md-3">
+            <label class="form-label">Nhà cung cấp</label>
+            <select class="form-select" name="supplierId" id="supplierSelect">
+                <option value="">-- Tất cả --</option>
+                @if (suppliers != null)
+                {
+                    foreach (var s in suppliers)
+                    {
+                        if (s.SupplierId == supplierId)
+                        {
+                            <option value="@s.SupplierId" selected>@s.SupplierName</option>
+                        }
+                        else
+                        {
+                            <option value="@s.SupplierId">@s.SupplierName</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- Khoảng giá -->
+        <div class="col-md-2">
+            <label class="form-label">Giá từ</label>
+            <input type="number" step="1000" min="0" class="form-control" name="minPrice" value="@minPrice" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">đến</label>
+            <input type="number" step="1000" min="0" class="form-control" name="maxPrice" value="@maxPrice" />
+        </div>
+
+        <div class="col-md-12 d-flex gap-3 flex-wrap">
+            <div class="form-check">
+                @if (inStock)
+                {
+                    <input class="form-check-input" type="checkbox" name="inStockOnly" id="InStockOnly" value="true" checked />
+                }
+                else
+                {
+                    <input class="form-check-input" type="checkbox" name="inStockOnly" id="InStockOnly" value="true" />
+                }
+                <label class="form-check-label" for="InStockOnly">Chỉ hiển thị hàng còn</label>
+            </div>
+
+            <div class="ms-auto">
+                <label class="form-label me-2">Sắp xếp</label>
+                <select class="form-select d-inline-block" name="sort" style="width:220px;">
+                    @if (string.IsNullOrEmpty(sort))
+                    {
+                        <option value="" selected>Mặc định (A→Z)</option>
+                    }
+                    else
+                    {
+                        <option value="">Mặc định (A→Z)</option>
+                    }
+                    @if (sort == "price_asc")
+                    {
+                        <option value="price_asc" selected>Giá ↑</option>
+                    }
+                    else
+                    {
+                        <option value="price_asc">Giá ↑</option>
+                    }
+                    @if (sort == "price_desc")
+                    {
+                        <option value="price_desc" selected>Giá ↓</option>
+                    }
+                    else
+                    {
+                        <option value="price_desc">Giá ↓</option>
+                    }
+                    @if (sort == "newest")
+                    {
+                        <option value="newest" selected>Mới nhất</option>
+                    }
+                    else
+                    {
+                        <option value="newest">Mới nhất</option>
+                    }
+                    @if (sort == "bestseller")
+                    {
+                        <option value="bestseller" selected>Bán chạy</option>
+                    }
+                    else
+                    {
+                        <option value="bestseller">Bán chạy</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary ms-2">Lọc</button>
+        </div>
+    </form>
+
+    <hr class="my-4" />
+
+    <!-- Kết quả -->
+    <div class="mt-2">
+        @if (Model != null && Model.Any())
+        {
+            <div class="row g-3">
+                @foreach (var item in Model)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm">
+                            <a href="/Product/@item.ProductId" class="text-decoration-none">
+                                <img src="@(string.IsNullOrEmpty(item.Image) ? "/Images/Template/no-image.png" : $"/Images/Products/{item.Image}")"
+                                     class="card-img-top" alt="@item.ProductName" style="object-fit:cover;height:180px;" />
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title text-truncate" title="@item.ProductName">@item.ProductName</h6>
+                                <div class="small text-muted mb-1">@item?.Supplier?.SupplierName</div>
+                                <div class="fw-bold mb-2">@((item.Prices ?? 0).ToString("#,0")) đ</div>
+                                <div class="mt-auto">
+                                    <a href="/Product/@item.ProductId" class="btn btn-sm btn-outline-primary w-100">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">Không có sản phẩm nào phù hợp với tiêu chí hiện tại.</div>
+        }
     </div>
-  
-  <br/>
-
-  <hr />
-</div>
-<div id="datatable">
 </div>
 
-@section Scripts{
-    <script>
-        $(function (){
-            $("#btnFind").click(function (v){
-                console.log(v);
-                console.log($("#datatable-search-input").val());
-                console.log( $("#from").val());
-                console.log( $("#to").val());
-                $.ajax({
-                    url:"/Shopping/AdvancedSearch",
-                    type: "POST",
-                    data: {
-                        keyword: $("#datatable-search-input").val(), fromValue: $("#from").val(), toValue: $("#to").val()
-                    },
-                    success: function(res){
-                        $("#datatable").html(res)
-                    },
-                    error: function (xhr, textStatus, error) {
-                        alert(xhr.statusText);}
+@section Scripts {
+<script>
+(function () {
+  const q = document.getElementById('q');
+  const dd = document.getElementById('suggestDropdown');
+  const suggestUrl = '@Url.Action("SearchSuggest","Shopping")';
+  let timer = null;
 
-                });
-                
-                
-            });
-        });
-        
-    </script>
+  function hide(){ dd.style.display='none'; dd.innerHTML=''; }
+  function priceFmt(n){ try { return new Intl.NumberFormat('vi-VN').format(n); } catch { return n; } }
+
+  function show(items){
+    if(!items || !items.length){ hide(); return; }
+    dd.innerHTML = items.map(it => {
+      const safe  = (it.text || '').replace(/"/g,'&quot;');
+      const thumb = it.image || '/Images/Template/no-image.png';
+      const right = (typeof it.price === 'number')
+                    ? `<span class="ms-auto small fw-semibold">${priceFmt(it.price)} đ</span>` : '';
+      return `
+        <button type="button" class="dropdown-item d-flex align-items-center"
+                data-id="${it.id}" data-text="${safe}">
+          <img src="${thumb}" onerror="this.src='/Images/Template/no-image.png'"
+               class="rounded me-2" style="width:40px;height:40px;object-fit:cover;">
+          <span class="text-truncate">${safe}</span>
+          ${right}
+        </button>`;
+    }).join('');
+    dd.style.display = 'block';
+
+    dd.querySelectorAll('.dropdown-item').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        q.value = btn.getAttribute('data-text') || '';
+        hide();
+        // Nếu muốn tự lọc ngay sau khi chọn thì mở dòng dưới:
+        // document.getElementById('searchForm').submit();
+      });
+    });
+  }
+
+  q.addEventListener('input', function(){
+    const val = q.value.trim();
+    if (timer) clearTimeout(timer);
+    if (!val){ hide(); return; }
+    timer = setTimeout(async ()=>{
+      try{
+        const res = await fetch(`${suggestUrl}?q=${encodeURIComponent(val)}`);
+        if(!res.ok){ hide(); return; }
+        const data = await res.json();
+        show(data);
+      }catch{ hide(); }
+    }, 250);
+  });
+
+  document.addEventListener('click', e=>{
+    if(!q.contains(e.target) && !dd.contains(e.target)) hide();
+  });
+})();
+</script>
 }
-
