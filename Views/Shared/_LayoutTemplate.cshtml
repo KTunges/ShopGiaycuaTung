@@ -83,8 +83,13 @@
                 <button class="quote_btn-container ml-0 ml-lg-4 d-flex justify-content-center dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                   @GlobalValues.Name
                 </button>
-                <ul class="dropdown-menu">
-                  <a asp-action="Logout" asp-controller="Shopping">Đăng xuất</a>
+                <ul class="list-unstyled text-center">
+                   <li class="user-menu">
+                    <a asp-action="Logout" asp-controller="Shopping"
+                        class="btn btn-danger btn-sm rounded-pill px-4 shadow-sm logout-btn">
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    </a>
+                   </li>
                 </ul>
               </div>
             }
