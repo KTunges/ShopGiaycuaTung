@@ -1,19 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MVC_template.Data;
 using MVC_template.Models;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Globalization;
 
 namespace MVC_template.Controllers
 {
     public class ShoppingController : Controller
     {
         private readonly QLWebBanHangContext _context;
+        private readonly IConfiguration _config;
 
-        public ShoppingController(QLWebBanHangContext context)
+        public ShoppingController(QLWebBanHangContext context, IConfiguration config)
         {
             _context = context;
+            _config  = config;
         }
 
         // =======================
@@ -335,12 +339,8 @@ namespace MVC_template.Controllers
         }
 
         // =======================
-        // GỢI Ý (Sản phẩm + Nhà cung cấp)
-        // Trả về [{ type:"product"/"supplier", text:"...", supplierId:"..." }]
+        // GỢI Ý (Sản phẩm)
         // =======================
-        // Đảm bảo có using:
-        // using Microsoft.EntityFrameworkCore;
-
         [HttpGet("Shopping/SearchSuggest")]
         [Produces("application/json")]
         public IActionResult SearchSuggest(string q)
@@ -377,9 +377,35 @@ namespace MVC_template.Controllers
             }
         }
 
+        // =======================
+        // GOOGLE MAPS - CONTACT
+        // =======================
+        [HttpGet]
+        public IActionResult Contact()
+        {
+            // Đọc cấu hình (ưu tiên User Secrets / ENV)
+            var lat  = double.Parse(_config["GoogleMaps:DefaultLat"] ?? "10.776889", CultureInfo.InvariantCulture);
+            var lng  = double.Parse(_config["GoogleMaps:DefaultLng"] ?? "106.700806", CultureInfo.InvariantCulture);
+            var zoom = int.Parse(_config["GoogleMaps:Zoom"] ?? "16");
 
+            var vm = new StoreMapVm
+            {
+                Name      = "ỐI DỒI ÔI STORE",
+                Address   = "3F Đ. Nguyễn Hữu Thọ, Tân Hưng, Quận 7, Thành phố Hồ Chí Minh",
+                Latitude  = 10.743242,
+                Longitude = 106.701554,
+                Zoom      = zoom,
+                ApiKey    = _config["GoogleMaps:ApiKey"] ?? ""
+            };
 
+            // (Tuỳ chọn) Nhiều chi nhánh:
+            // vm.Branches = new List<BranchVm> {
+            //   new BranchVm{ Name="Chi nhánh 1", Address="Q1, TP.HCM", Lat=10.776889, Lng=106.700806, Phone="0123 456 789", Hours="9:00-21:00" },
+            //   new BranchVm{ Name="Chi nhánh 2", Address="Q3, TP.HCM", Lat=10.7795,   Lng=106.6820,   Phone="0123 456 000", Hours="9:00-21:00" }
+            // };
 
+            return View(vm);
+        }
 
         // =======================
         // GIỎ HÀNG / ĐẶT HÀNG
@@ -479,7 +505,7 @@ namespace MVC_template.Controllers
 
             foreach (var item in data)
             {
-                if (!CheckQuantity(item.ProductId, item.Quantity ?? 0))
+                if (!CheckQuantity(item.ProductId, (item.Quantity ?? 0)))
                 {
                     TempData["alert"] = "Sản phẩm: " + (item.Product?.ProductName ?? item.ProductId) + " đã hết số lượng bạn cần";
                     return RedirectToAction(nameof(Cart));

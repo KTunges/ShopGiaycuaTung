@@ -2,45 +2,43 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ỐI DỒI ÔI STORE</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
     <style>
+        /* Tên shop: đen, đậm, UPPERCASE */
         .navbar-brand span.store-name {
             font-weight: bold;
-            color: black;
+            color: #000;
             text-transform: uppercase;
         }
 
-        /* Khoảng cách logo và menu */
-        .navbar-nav {
-            margin-left: 60px; /* tăng khoảng cách */
-            gap: 50px; /* khoảng cách giữa các menu item */
-        }
-
+        /* Link menu */
         .navbar-nav .nav-link {
             font-weight: normal;
             color: #000 !important;
         }
-
         .navbar-nav .nav-link:hover {
-            color: #007bff !important;
+            color: #0d6efd !important;
         }
 
+        /* Nhóm nút bên phải */
         .quote_btn-container a {
             background-color: #ff5733;
-            color: white !important;
+            color: #fff !important;
             padding: 8px 16px;
             margin-left: 10px;
             border-radius: 4px;
             text-decoration: none;
             font-weight: bold;
+            display: inline-block;
         }
-
         .quote_btn-container a:hover {
             background-color: #e14e2d;
         }
@@ -50,35 +48,40 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" href="/">
-                    <img src="/Template/images/slide.png" alt="" style="height: 40px; margin-right: 8px;">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Shopping" asp-action="Home">
+                    <img src="/Template/images/slide-img.png" alt="Logo" style="height: 40px; margin-right: 8px;">
                     <span class="store-name">ỐI DỒI ÔI STORE</span>
                 </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto me-3" style="gap: 50px;">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Shopping/Index">Mua sắm</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Shopping/Order">Đơn hàng</a>
-                    </li>
-                </ul>
-                <div class="d-flex">
-                    <div class="quote_btn-container">
-                        <a href="/Shopping/Cart">Giỏ hàng</a>
+                    <!-- Menu căn phải -->
+                    <ul class="navbar-nav ms-auto gap-4 me-2">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Shopping" asp-action="Home">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Shopping" asp-action="Index">Mua sắm</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Shopping" asp-action="Order">Đơn hàng</a>
+                        </li>
+                        @* ĐÃ BỎ mục Liên hệ ở menu để chuyển thành nút *@
+                    </ul>
+
+                    <div class="d-flex align-items-center">
+                        @await Html.PartialAsync("_ContactHeaderButton")
+                        <div class="quote_btn-container">
+                            <a asp-controller="Shopping" asp-action="Cart">Giỏ hàng</a>
+                        </div>
+                        <div class="quote_btn-container">
+                            <a asp-controller="Shopping" asp-action="Login">Đăng nhập</a>
+                        </div>
                     </div>
-                    <div class="quote_btn-container">
-                        <a href="/Shopping/Login">Đăng nhập</a>
-                    </div>
-                </div>
 
                 </div>
             </div>
@@ -100,6 +103,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

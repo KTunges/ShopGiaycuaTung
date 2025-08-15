@@ -1,0 +1,31 @@
+@model MVC_template.Models.StoreMapVm
+@{ ViewData["Title"] = "Liên hệ"; }
+
+<h2 class="mb-2">Vị trí cửa hàng</h2>
+<p class="text-muted mb-3">@Model.Name – @Model.Address</p>
+
+<style>#map{width:100%;height:60vh;border-radius:12px;}</style>
+<div id="map"></div>
+
+<a class="btn btn-primary mt-3"
+   href="https://www.google.com/maps/dir/?api=1&destination=@Model.Latitude,@Model.Longitude"
+   target="_blank" rel="noopener">Chỉ đường trên Google Maps</a>
+
+@section Scripts{
+<script>
+  function initMap(){
+    const pos = { lat: @Model.Latitude, lng: @Model.Longitude };
+    const map = new google.maps.Map(document.getElementById('map'), {
+      center: pos, zoom: @Model.Zoom, mapTypeControl:false, streetViewControl:false
+    });
+    const marker = new google.maps.Marker({ position: pos, map, title: "@Model.Name" });
+    const info = new google.maps.InfoWindow({
+      content: `<div style="min-width:220px"><strong>@Model.Name</strong><br/>@Model.Address<br/>
+                <a target="_blank" rel="noopener"
+                   href="https://www.google.com/maps/dir/?api=1&destination=@Model.Latitude,@Model.Longitude">Chỉ đường</a></div>`
+    });
+    info.open(map, marker);
+  }
+</script>
+<script defer src="https://maps.googleapis.com/maps/api/js?key=@Model.ApiKey&callback=initMap&v=weekly"></script>
+}

@@ -4,6 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Dùng lệnh `dotnet user-secrets init` sẽ tự tạo giá trị này.
+         Bạn có thể giữ nguyên hoặc thay bằng giá trị do lệnh sinh ra. -->
+    <UserSecretsId>MVC-WebBanHang-0f3e2a7b-1234-5678-9abc-def012345678</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
