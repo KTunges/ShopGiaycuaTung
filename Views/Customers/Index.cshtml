@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Customers</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -43,10 +43,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
-   
-            </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-danger btn-sm">
+                        Edit
+                    </a>
+                </td>
+
         </tr>
 }
     </tbody>
